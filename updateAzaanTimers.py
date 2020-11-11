@@ -19,9 +19,8 @@ now = datetime.datetime.now()
 
 generic_command = '''
 curl http://{url}/?instant="http://radio.mysjid.com:8000/playlist.mp3.m3u" && \
+mplayer -ao alsa:device=hw=0.0 /home/pi/adhan/{mp3_file}.mp3 && \
 sleep 10 && \
-mplayer /home/pi/adhan/{mp3_file}.mp3 && \
-sleep 20 && \
 curl http://{url}/?stop \
 > /dev/null 2>&1 '''
 
@@ -94,7 +93,7 @@ today_prayers=calendar.todays_prayers()
 print(today_prayers)
 for label,prayer in today_prayers.value.items(): 
   if label != "shourouq":
-    addDarkiceRestart(label, prayer, system_cron)
+    # addDarkiceRestart(label, prayer, system_cron)
     addAzaanTime(label, prayer, system_cron)
     
 
