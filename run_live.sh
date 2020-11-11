@@ -1,3 +1,4 @@
+# docker network create radio
 docker run -d \
     --name live \
     --user root \

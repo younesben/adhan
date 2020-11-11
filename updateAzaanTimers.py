@@ -18,15 +18,14 @@ system_cron = CronTab(user='pi')
 now = datetime.datetime.now()
 
 generic_command = '''
-curl http://{url}/?instant="http://radio.mysjid.com:8000/playlist.mp3.m3u" && \
-mplayer -ao alsa:device=hw=0.0 /home/pi/adhan/{mp3_file}.mp3 && \
-sleep 10 && \
-curl http://{url}/?stop \
+/bin/bash /home/pi/adhan/run_live.sh && \
+sleep 600 && \
+/usr/bin/docker rm -f live \
 > /dev/null 2>&1 '''
 
-url='192.168.1.6'
-strPlayFajrAzaanMP3Command = generic_command.format(mp3_file='Adhan-fajr',url=url)
-strPlayAzaanMP3Command =  generic_command.format(mp3_file='Adhan-Makkah2-Dua',url=url)
+
+strPlayFajrAzaanMP3Command = generic_command
+strPlayAzaanMP3Command =  generic_command
 strUpdateCommand = '/home/pi/adhan/venv/bin/python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1'
 strClearLogsCommand = 'truncate -s 0 /home/pi/adhan/adhan.log 2>&1'
 strJobComment = 'rpiAdhanClockJob'
