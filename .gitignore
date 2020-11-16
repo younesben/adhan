@@ -3,3 +3,5 @@
 *.pyc
 calendar.json
 venv
+conf/*.cfg
+logs

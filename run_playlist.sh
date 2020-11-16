@@ -1,5 +1,5 @@
 docker run -d  \
-    --name darkice  \
+    --name playlist  \
     --user root \
     --device=/dev/snd:/dev/snd \
     --network=radio \
