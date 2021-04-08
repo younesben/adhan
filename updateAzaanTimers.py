@@ -9,17 +9,17 @@ from calendarrr import Calendar
 import json
 
 
-ADHAN_FILE = ""
-MPLAYER = ""
+ADHAN_FILE = "Adhan-Makkah2-Dua.mp3"
+MPLAYER = "/usr/bin/mpg123-alsa -a hw:Loopback,0,0 "
 KARADIO_URL = ""
 LOGGING = True
 BROADCASTING = True
-SLEEP_TIME = 600
+SLEEP_TIME = 10
 
 
 RADIO_URL = "radio.mysjid.com"
 RADIO_PORT = "8000"
-MODE = "live"
+MODE = "playlist"
 MOSQUEE = "rosny"
 
 
@@ -34,7 +34,7 @@ LAUNCH_BROADCAST_CMD = f"/bin/bash {PWD}/run_{MODE}.sh" if BROADCASTING else ""
 LAUNCH_RADIO_CMD = f"/usr/bin/curl http://{KARADIO_URL}/?instant='http://{RADIO_URL}:{RADIO_PORT}/{MODE}-{MOSQUEE}.mp3'" if KARADIO_URL else ""
 PLAY_ADHAN_CMD = f"{MPLAYER} {PWD}/{ADHAN_FILE}" if all(
     (MPLAYER, ADHAN_FILE)) else ""
-STOP_BROADCAST_CMD = f"/usr/bin/docker rm -f {MODE}" if BROADCASTING else ""
+STOP_BROADCAST_CMD = ""
 STOP_RADIO_CMD = f"/usr/bin/curl http://{KARADIO_URL}/?stop" if KARADIO_URL else ""
 REPORT_END_BROKER_CMD = f'msg="End of broadcast :{LOGGING_CMD}' if LOGGING else ""
 SLEEP_CMD = f"/bin/sleep {SLEEP_TIME/2} " if SLEEP_TIME and SLEEP_TIME > 0 else ""
