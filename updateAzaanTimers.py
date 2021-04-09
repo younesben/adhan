@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from dotenv import load_dotenv
+load_dotenv()
 from crontab import CronTab
 import sys
 import os
@@ -9,30 +11,34 @@ from calendarrr import Calendar
 import json
 
 
-ADHAN_FILE = "Adhan-Makkah2-Dua.mp3"
-MPLAYER = "/usr/bin/mpg123-alsa -a hw:Loopback,0,0 "
-KARADIO_URL = ""
-LOGGING = True
-BROADCASTING = True
-SLEEP_TIME = 10
+HOME = os.environ.get('HOME')
 
 
-RADIO_URL = "radio.mysjid.com"
-RADIO_PORT = "8000"
-MODE = "playlist"
-MOSQUEE = "rosny"
+ADHAN_FILE = os.environ.get("ADHAN_FILE")
+MPLAYER = os.environ.get("MPLAYER")
+KARADIO_URL = os.environ.get("KARADIO_URL")
+LOGGING = bool(int(os.environ.get("LOGGING")))
+BROADCASTING = bool(int(os.environ.get("BROADCASTING")))
+SLEEP_TIME = float(os.environ.get("SLEEP_TIME"))
+print(BROADCASTING)
 
 
-PWD = os.getcwd()
-PYTHON = f"{PWD}/venv/bin/python"
-LOGGING_CMD = f' `date`" && {PYTHON} {PWD}/broker/topics/sender.py "{MOSQUEE}.info" $msg'
+RADIO_URL = os.environ.get("RADIO_URL")
+RADIO_PORT = os.environ.get("RADIO_PORT")
+MODE = os.environ.get("MODE")
+MOSQUEE = os.environ.get("MOSQUEE")
+
+
+ADHAN_HOME = f"{HOME}/adhan"
+PYTHON = f"{ADHAN_HOME}/venv/bin/python"
+LOGGING_CMD = f' `date`" && {PYTHON} {ADHAN_HOME}/broker/topics/sender.py "{MOSQUEE}.info" $msg'
 
 ##############################################################################
 
 REPORT_BEGIN_BROKER_CMD = f'msg="Beginning of broadcast :{LOGGING_CMD}' if LOGGING else ""
-LAUNCH_BROADCAST_CMD = f"/bin/bash {PWD}/run_{MODE}.sh" if BROADCASTING else ""
+LAUNCH_BROADCAST_CMD = f"/bin/bash {ADHAN_HOME}/run_{MODE}.sh" if BROADCASTING else ""
 LAUNCH_RADIO_CMD = f"/usr/bin/curl http://{KARADIO_URL}/?instant='http://{RADIO_URL}:{RADIO_PORT}/{MODE}-{MOSQUEE}.mp3'" if KARADIO_URL else ""
-PLAY_ADHAN_CMD = f"{MPLAYER} {PWD}/{ADHAN_FILE}" if all(
+PLAY_ADHAN_CMD = f"{MPLAYER} {ADHAN_HOME}/{ADHAN_FILE}" if all(
     (MPLAYER, ADHAN_FILE)) else ""
 STOP_BROADCAST_CMD = ""
 STOP_RADIO_CMD = f"/usr/bin/curl http://{KARADIO_URL}/?stop" if KARADIO_URL else ""
@@ -41,7 +47,7 @@ SLEEP_CMD = f"/bin/sleep {SLEEP_TIME/2} " if SLEEP_TIME and SLEEP_TIME > 0 else 
 
 ##############################################################################
 
-with open(f'{PWD}/calendar.json', 'r') as f:
+with open(f'{ADHAN_HOME}/calendar.json', 'r') as f:
     cal = json.load(f)
     calendar = Calendar(cal)
 
@@ -69,8 +75,8 @@ heartbeat_command = f'msg="Raspberry heart beat :{LOGGING_CMD}' if LOGGING else 
 
 strPlayFajrAzaanMP3Command = generic_command
 strPlayAzaanMP3Command = generic_command
-strUpdateCommand = f'{PYTHON} {PWD}/updateAzaanTimers.py >> {PWD}/adhan.log 2>&1'
-strClearLogsCommand = f'truncate -s 0 {PWD}/adhan.log 2>&1'
+strUpdateCommand = f'{PYTHON} {ADHAN_HOME}/updateAzaanTimers.py >> {ADHAN_HOME}/adhan.log 2>&1'
+strClearLogsCommand = f'truncate -s 0 {ADHAN_HOME}/adhan.log 2>&1'
 strJobComment = 'rpiAdhanClockJob'
 
 
