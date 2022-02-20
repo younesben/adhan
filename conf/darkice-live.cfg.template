@@ -11,7 +11,7 @@ rtprio          = 2         # scheduling priority for the realtime threads
 
 # this section describes the audio input that will be streamed
 [input]
-device          = plughw:2,0 
+device          = plughw:1,0
 sampleRate      = 44100     # sample rate in Hz. try 11025, 22050 or 44100
 bitsPerSample   = 16        # bits per sample. try 16
 channel         = 1         # channels. 1 = mono, 2 = stereo
@@ -26,7 +26,7 @@ server          = radio.mysjid.com
                             # host name of the server
 port            = 8000      # port of the IceCast2 server, usually 8000
 password        = password_change_me    # source password to the IceCast2 server
-mountPoint      = live_<mawaqit_identifier>.mp3  # mount point of this stream on the IceCast2 server
+mountPoint      = live.mp3  # mount point of this stream on the IceCast2 server
 name            = live from raspberrypi mic to wordpress server
                             # name of the stream
 description     = test live

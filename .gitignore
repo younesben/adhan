@@ -5,3 +5,4 @@ calendar.json
 venv
 conf/*.cfg
 logs
+.env

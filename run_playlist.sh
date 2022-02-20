@@ -1,5 +1,5 @@
+docker network create radio
 docker rm -f playlist
-
 docker run -d  \
     --name playlist  \
     --user root \
