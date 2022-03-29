@@ -20,7 +20,6 @@ KARADIO_URL = os.environ.get("KARADIO_URL")
 LOGGING = bool(int(os.environ.get("LOGGING")))
 BROADCASTING = bool(int(os.environ.get("BROADCASTING")))
 SLEEP_TIME = float(os.environ.get("SLEEP_TIME"))
-print(BROADCASTING)
 
 
 RADIO_URL = os.environ.get("RADIO_URL")
@@ -31,18 +30,18 @@ MOSQUEE = os.environ.get("MOSQUEE")
 
 ADHAN_HOME = f"{HOME}/adhan"
 PYTHON = f"{ADHAN_HOME}/venv/bin/python"
-LOGGING_CMD = f' `date`" && {PYTHON} {ADHAN_HOME}/broker/topics/sender.py "{MOSQUEE}.info" $msg'
+LOGGING_CMD = f' `date`" && {PYTHON} {ADHAN_HOME}/broker/mqtt/sender.py'
 
 ##############################################################################
 
-REPORT_BEGIN_BROKER_CMD = f'msg="Beginning of broadcast :{LOGGING_CMD}' if LOGGING else ""
+REPORT_BEGIN_BROKER_CMD = f'msg="Beginning of broadcast :{LOGGING_CMD} "{MOSQUEE}/start" $msg' if LOGGING else ""
 LAUNCH_BROADCAST_CMD = f"/bin/bash {ADHAN_HOME}/run_{MODE}.sh" if BROADCASTING else ""
-LAUNCH_RADIO_CMD = f"/usr/bin/curl http://{KARADIO_URL}/?instant='http://{RADIO_URL}:{RADIO_PORT}/{MODE}-{MOSQUEE}.mp3'" if KARADIO_URL else ""
+LAUNCH_RADIO_CMD = f"/usr/bin/curl http://{KARADIO_URL}/?instant='http://{RADIO_URL}:{RADIO_PORT}/{MODE}.mp3'" if KARADIO_URL else ""
 PLAY_ADHAN_CMD = f"{MPLAYER} {ADHAN_HOME}/{ADHAN_FILE}" if all(
     (MPLAYER, ADHAN_FILE)) else ""
 STOP_BROADCAST_CMD = ""
 STOP_RADIO_CMD = f"/usr/bin/curl http://{KARADIO_URL}/?stop" if KARADIO_URL else ""
-REPORT_END_BROKER_CMD = f'msg="End of broadcast :{LOGGING_CMD}' if LOGGING else ""
+REPORT_END_BROKER_CMD = f'msg="End of broadcast :{LOGGING_CMD} "{MOSQUEE}/stop" $msg' if LOGGING else ""
 SLEEP_CMD = f"/bin/sleep {SLEEP_TIME/2} " if SLEEP_TIME and SLEEP_TIME > 0 else ""
 
 ##############################################################################
@@ -71,7 +70,7 @@ commands = [
 generic_command = (' && ').join(
     i for i in commands if i) + f" > /dev/null 2>&1 "
 
-heartbeat_command = f'msg="Raspberry heart beat :{LOGGING_CMD}' if LOGGING else ""
+heartbeat_command = f'msg="Raspberry heart beat :{LOGGING_CMD} {MOSQUEE}/info $msg' if LOGGING else ""
 
 strPlayFajrAzaanMP3Command = generic_command
 strPlayAzaanMP3Command = generic_command
