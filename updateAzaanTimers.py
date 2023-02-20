@@ -30,19 +30,20 @@ MOSQUEE = os.environ.get("MOSQUEE")
 
 ADHAN_HOME = f"{HOME}/adhan"
 PYTHON = f"{ADHAN_HOME}/venv/bin/python"
-LOGGING_CMD = f' `date`" && {PYTHON} {ADHAN_HOME}/broker/mqtt/sender.py'
+PUBLISH_CMD = f'{PYTHON} {ADHAN_HOME}/broker/mqtt/sender.py'
+MOUNT_POINT = f"{MOSQUEE}_{MODE}"
 
 ##############################################################################
 
-REPORT_BEGIN_BROKER_CMD = f'msg="Beginning of broadcast :{LOGGING_CMD} "{MOSQUEE}/start" $msg' if LOGGING else ""
+REPORT_BEGIN_BROKER_CMD = f'msg="Beginning of broadcast : `date`" && {PUBLISH_CMD} {MOSQUEE}/info $msg' if LOGGING else ""
 LAUNCH_BROADCAST_CMD = f"/bin/bash {ADHAN_HOME}/run_{MODE}.sh" if BROADCASTING else ""
-LAUNCH_RADIO_CMD = f"/usr/bin/curl http://{KARADIO_URL}/?instant='http://{RADIO_URL}:{RADIO_PORT}/{MODE}.mp3'" if KARADIO_URL else ""
+LAUNCH_RADIO_CMD = f"{PUBLISH_CMD} {MOSQUEE}/start http://{RADIO_URL}:{RADIO_PORT}/{MOUNT_POINT}.mp3"
 PLAY_ADHAN_CMD = f"{MPLAYER} {ADHAN_HOME}/{ADHAN_FILE}" if all(
     (MPLAYER, ADHAN_FILE)) else ""
 STOP_BROADCAST_CMD = ""
-STOP_RADIO_CMD = f"/usr/bin/curl http://{KARADIO_URL}/?stop" if KARADIO_URL else ""
-REPORT_END_BROKER_CMD = f'msg="End of broadcast :{LOGGING_CMD} "{MOSQUEE}/stop" $msg' if LOGGING else ""
-SLEEP_CMD = f"/bin/sleep {SLEEP_TIME/2} " if SLEEP_TIME and SLEEP_TIME > 0 else ""
+STOP_RADIO_CMD = f"{PUBLISH_CMD} {MOSQUEE}/stop"
+REPORT_END_BROKER_CMD = f'msg="End of broadcast : `date`" && {PUBLISH_CMD} {MOSQUEE}/info $msg' if LOGGING else ""
+SLEEP_CMD = f"/bin/sleep {SLEEP_TIME} " if SLEEP_TIME and SLEEP_TIME > 0 else ""
 
 ##############################################################################
 
@@ -70,7 +71,7 @@ commands = [
 generic_command = (' && ').join(
     i for i in commands if i) + f" > /dev/null 2>&1 "
 
-heartbeat_command = f'msg="Raspberry heart beat :{LOGGING_CMD} {MOSQUEE}/info $msg' if LOGGING else ""
+heartbeat_command = f'msg="Raspberry heart beat : `date`" && {PUBLISH_CMD} {MOSQUEE}/info $msg' if LOGGING else ""
 
 strPlayFajrAzaanMP3Command = generic_command
 strPlayAzaanMP3Command = generic_command
@@ -136,7 +137,6 @@ today_prayers = calendar.todays_prayers()
 print(today_prayers)
 for label, prayer in today_prayers.value.items():
   if label != "shourouq":
-    # addDarkiceRestart(label, prayer, system_cron)
     addAzaanTime(label, prayer, system_cron)
 
 # Hearbeat job

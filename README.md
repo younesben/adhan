@@ -1,0 +1,1 @@
+after reboot, launch `sudo modprobe snd-aloop`
