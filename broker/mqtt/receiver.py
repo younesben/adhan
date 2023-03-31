@@ -23,7 +23,7 @@ client.on_connect = on_connect
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(f" [x] {msg.topic}:{ msg.payload.decode('utf-8')}")
-    with open(f"{os.getcwd()}/logs/broadcast.txt", 'ab') as f:
+    with open(f"/home/pi/adhan/logs/broadcast.txt", 'ab') as f:
         f.write(msg.payload)
         f.write(b'\n')
 client.on_message = on_message
