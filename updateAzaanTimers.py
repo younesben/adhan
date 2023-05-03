@@ -69,7 +69,7 @@ commands = [
 ]
 
 generic_command = (' && ').join(
-    i for i in commands if i) + f" > /dev/null 2>&1 "
+    i for i in commands if i) + " > /dev/null 2>&1 "
 
 heartbeat_command = f'msg="Raspberry heart beat : `date`" && {PUBLISH_CMD} {MOSQUEE}/info $msg' if LOGGING else ""
 
